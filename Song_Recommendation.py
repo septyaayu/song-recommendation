@@ -74,7 +74,7 @@ tfidf_matrix_mood = tfidf_mood.fit_transform(df['processed_mood'])
 tfidf_matrix_all = tfidf_all.fit_transform(df['all'])
 
 # 3. Sistem Rekomendasi
-def recommend_songs(query, feature='judul', top_n=10):
+def recommend_songs(query, feature='judul', top_n=5):
     vectorizers = {
         'judul': tfidf_judul,
         'artist': tfidf_artist,
@@ -126,7 +126,7 @@ query = st.text_input("Masukkan pencarian:", placeholder=placeholder_text)
 # Tombol submit dalam form agar bisa pakai Enter
 with st.form(key='search_form'):
     submit = st.form_submit_button("🔍 Cari Rekomendasi")
-    
+
 if submit:
     if query:
         results, error = recommend_songs(query, feature)
