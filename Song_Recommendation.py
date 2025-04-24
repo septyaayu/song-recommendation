@@ -74,7 +74,7 @@ tfidf_matrix_mood = tfidf_mood.fit_transform(df['processed_mood'])
 tfidf_matrix_all = tfidf_all.fit_transform(df['all'])
 
 # 3. Sistem Rekomendasi
-def recommend_songs(query, feature='judul', top_n=5):
+def recommend_songs(query, feature='judul', top_n=10):
     vectorizers = {
         'judul': tfidf_judul,
         'artist': tfidf_artist,
@@ -107,13 +107,26 @@ def recommend_songs(query, feature='judul', top_n=5):
 st.title("🎵 Sistem Rekomendasi Lagu")
 st.write("Masukkan kata kunci untuk menemukan lagu yang cocok dengan selera Anda!")
 
-# Menggunakan st.form agar bisa menekan Enter tanpa tombol eksplisit
-with st.form(key='search_form'):
-    feature = st.selectbox("Pilih filter pencarian:", ["judul", "artist", "mood", "all"], index=0)
-    query = st.text_input("Masukkan pencarian lagu, artis, atau mood:", 
-                          placeholder="mood yang tersedia: happy | calm | energetic | sad")
-    submit = st.form_submit_button("🔍 Cari Rekomendasi")
+# Pilihan filter pencarian
+feature = st.selectbox("Pilih filter pencarian:", ["judul", "artist", "mood", "all"], index=0)
 
+# Placeholder dinamis sesuai fitur yang dipilih
+if feature == "judul":
+    placeholder_text = "Contoh: 'Hati-Hati di Jalan', 'Lathi'"
+elif feature == "artist":
+    placeholder_text = "Contoh: 'Tulus', 'Nadin Amizah'"
+elif feature == "mood":
+    placeholder_text = "Mood yang tersedia: happy | calm | energetic | sad"
+else:  # all
+    placeholder_text = "Masukkan kata kunci lagu, artis, atau mood"
+
+# Input query di luar form agar placeholder langsung berubah
+query = st.text_input("Masukkan pencarian:", placeholder=placeholder_text)
+
+# Tombol submit dalam form agar bisa pakai Enter
+with st.form(key='search_form'):
+    submit = st.form_submit_button("🔍 Cari Rekomendasi")
+    
 if submit:
     if query:
         results, error = recommend_songs(query, feature)
